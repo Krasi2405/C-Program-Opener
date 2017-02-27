@@ -132,147 +132,157 @@ double test_time(void (*f)(int[], int), int array[], int size) {
 
 int main()
 {
-    DIR *d;
-    struct dirent *dir;
-    int counter = 0;
+    while(1) {
+        DIR *d;
+        struct dirent *dir;
 
-    int current = 0;
-	int max = 0;
-    char file_name[30];
-    char command[50];
-    int controls;
-	clock_t start, end;
-    double cpu_time_used;
+        int counter;
+        int current = 0;
+        int max = 0;
 
-	clear();
+        char file_name[30];
+        char command[50];
+        int controls;
+        clock_t start, end;
+        double cpu_time_used;
 
-    // Choose whether to run the program or open its contents.
-    printf("Press '1' in order to open program runner.\nPress '2' in order to open program reader.\n");
-    printf("Press '3' in order to open algorithm viewer.\n");
-    controls = getch();
 
-    // PROGRAM OPENER MODE
-    if(controls == '1') 
-    {
         clear();
-        max = files_in_dir("scripts");
+        printf("Press '1' to open program runner.\nPress '2' to open program reader.\n");
+        printf("Press '3' to open algorithm time recorder.\nPress '4' to open algorithm step by step viewer\n");
+        controls = getch();
 
-        while(1) {
-            
-            d = opendir("./scripts");
-            printf("Available programs: \n");
+        // PROGRAM OPENER MODE
+        if(controls == '1') 
+        {
+            while(1) {
+                clear();
+                max = files_in_dir("scripts");
+                while(1) {
+                    counter = 0;
                     
-            while((dir = readdir(d)) != NULL) {
-                        
-                if (dir->d_type == DT_REG) {
-                    printf("%s", dir->d_name);
-                    if(counter == current) {
-                        printf(" - Current.");
-                        sprintf(file_name, "%s", dir->d_name);
+                    
+                    d = opendir("./scripts");
+                    printf("Available programs: \n");
+                            
+                    while((dir = readdir(d)) != NULL) {
+                                
+                        if (dir->d_type == DT_REG) {
+                            printf("%s", dir->d_name);
+                            if(counter == current) {
+                                printf(" - Current.");
+                                sprintf(file_name, "%s", dir->d_name);
+                            }
+                            printf("\n");
+                            counter++;
+                            
+                        }
                     }
-                    printf("\n");
-                    counter++;
+                    closedir(d);
+                    controls = getch();
+                    clear();
+                    
+                    if(controls == 13) {
+                        break;
+                    }
+                    if(controls == 'w' || controls == 'W') {
+                        current--;
+                    }
+                    else if(controls == 's' || controls == 'S') {
+                        current++;
+                    }
+
+                    if(current < 0) {
+                        current = 0;
+                    }
+                    else if(current >= max) {
+                        current = max - 1;
+                    }
+                }
+
+                sprintf(command, "scripts\\%s", file_name);
+                system(command);
+
+                printf("\nPress anything to run the algorithm time recorder again.\n");
+                printf("Press Escape to exit the program.\nPress Enter to go back to main menu.\n");
+                controls = getch();
+                if(controls == 27) {
+                    return 0;
+                }
+                else if(controls == 13) {
+                    break;
                 }
             }
-            closedir(d);
-            controls = getch();
-            clear();
-            
-            if(controls == 13) {
-                break;
-            }
-            if(controls == 'w' || controls == 'W') {
-                current--;
-            }
-            else if(controls == 's' || controls == 'S') {
-                current++;
-            }
-
-            if(current < 0) {
-                current = 0;
-            }
-            else if(counter >= max) {
-                current = max - 1;
-            }
         }
+        // PROGRAM READER MODE
+        else if(controls == '2') 
+        {
+            while(1) {
+                clear();
+                max = files_in_dir("txt_scripts");
 
-        sprintf(command, "scripts\\%s", file_name);
-        system(command);
-
-        return 0;
-    }
-    // PROGRAM READER MODE
-    else if(controls == '2') 
-    {
-        clear();
-        max = files_in_dir("txt_scripts");
-
-        while(1) {
-            d = opendir("./txt_scripts");
-            printf("Available programs: \n");
-                    
-            while((dir = readdir(d)) != NULL) {
-                        
-                if (dir->d_type == DT_REG) {
-                    printf("%s", dir->d_name);
-                    if(counter == current) {
-                        printf(" - Current.");
-                        sprintf(file_name, "%s", dir->d_name);
+                while(1) {
+                    d = opendir("./txt_scripts");
+                    printf("Available programs: \n");
+                            
+                    while((dir = readdir(d)) != NULL) {
+                                
+                        if (dir->d_type == DT_REG) {
+                            printf("%s", dir->d_name);
+                            if(counter == current) {
+                                printf(" - Current.");
+                                sprintf(file_name, "%s", dir->d_name);
+                            }
+                            printf("\n");
+                            counter++;
+                        }
                     }
-                    printf("\n");
-                    counter++;
+                    closedir(d);
+
+                    controls = getch();
+                    clear();
+                    
+                    if(controls == 13) {
+                        break;
+                    }
+                    if(controls == 'w' || controls == 'W') {
+                        counter--;
+                    }
+                    else if(controls == 's' || controls == 'S') {
+                        counter++;
+                    }
+
+                    if(counter < 0) {
+                        counter = 0;
+                    }
+                    else if(counter >= max) {
+                        counter = max - 1;
+                    }
+                }
+
+                sprintf(command, "type txt_scripts\\%s", file_name);
+                system(command);
+
+                printf("\nPress anything to run the algorithm time recorder again.\n");
+                printf("Press Escape to exit the program.\nPress Enter to go back to main menu.\n");
+                controls = getch();
+                if(controls == 27) {
+                    return 0;
+                }
+                else if(controls == 13) {
+                    break;
                 }
             }
-            closedir(d);
-
-            controls = getch();
-            clear();
-            
-            if(controls == 13) {
-                break;
-            }
-            if(controls == 'w' || controls == 'W') {
-                counter--;
-            }
-            else if(controls == 's' || controls == 'S') {
-                counter++;
-            }
-
-            if(counter < 0) {
-                counter = 0;
-            }
-            else if(counter >= max) {
-                counter = max - 1;
-            }
         }
-
-        sprintf(command, "type txt_scripts\\%s", file_name);
-        system(command);
-
-        return 0;
-    }
-    // Algorithm Viewer
-    else if(controls == '3') {
-        while(1) {
-            clear();
-            printf("Press '1' to run overall algorithm diagnostics.\n");
-            printf("Press '2' to run step by step algorithm diagnostics.\n");
-
-            controls = getch();
-            clear();
-            
-
-
-            // Overall
-            if(controls == '1') {
+        // Algorithm Time Recorder
+        else if(controls == '3') {
+            while(1) {
                 double time_taken;
                 double overall_time = 0;
                 // Initialize arrays.
                 int size = 10000;
                 int sorted_array[size];
                 int random_array1[size];
-                int random_array2[size];
-                int random_array3[size];
                 int unsorted_array[size];
 
 
@@ -289,10 +299,11 @@ int main()
                     unsorted_array[i] = size - 1 - i;
                 }
 
+                clear();
+
                 // #################################################
                 //               STRAIGHT SELECT
                 // #################################################
-
                 printf("Currently testing straight select sort.\n");
                 void (*straight_sort_ptr)(int[], int);
                 straight_sort_ptr = &straight_sort;
@@ -346,6 +357,8 @@ int main()
                 printf("Seconds taken for worst case unsorted array: %lf\n", time_taken);
 
                 printf("Overall time taken: %lf\n", overall_time);
+
+
 
                 // #################################################
                 //               MODIFIED BUBBLE SORT
@@ -407,7 +420,15 @@ int main()
 
                 printf("Overall time taken: %lf\n", overall_time);
 
-                getch();
+                printf("\nPress anything to run the algorithm time recorder again.\n");
+                printf("Press Escape to exit the program.\nPress Enter to go back to main menu.\n");
+                controls = getch();
+                if(controls == 27) {
+                    return 0;
+                }
+                else if(controls == 13) {
+                    break;
+                }
             }
         }
     }
