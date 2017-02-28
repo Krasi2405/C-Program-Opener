@@ -234,6 +234,8 @@ int main()
                 max = files_in_dir("txt_scripts");
 
                 while(1) {
+                    counter = 0;
+
                     d = opendir("./txt_scripts");
                     printf("Available programs: \n");
                             
@@ -258,17 +260,17 @@ int main()
                         break;
                     }
                     if(controls == 'w' || controls == 'W') {
-                        counter--;
+                        current--;
                     }
                     else if(controls == 's' || controls == 'S') {
-                        counter++;
+                        current++;
                     }
 
-                    if(counter < 0) {
-                        counter = 0;
+                    if(current < 0) {
+                        current = 0;
                     }
-                    else if(counter >= max) {
-                        counter = max - 1;
+                    else if(current >= max) {
+                        current = max - 1;
                     }
                 }
 
